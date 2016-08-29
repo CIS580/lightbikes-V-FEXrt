@@ -1,9 +1,17 @@
 var canvas = document.getElementById('screen');
 var ctx = canvas.getContext('2d');
+
+var backCanvas = document.create('canvas');
+// set width height
+var backCtx = backCanvas.getContext('2d');
+
 var speed = 1/16/1000;
 
 var x = 0;
 var y = 0;
+
+var image = new Image();
+image.src = "file:///Users/v-fexrt/Desktop/Screen Shot 2016-08-29 at 1.53.25 PM.png";
 
 var input = {
   up: false,
@@ -72,16 +80,35 @@ window.onkeyup = function(event) {
   return false;
 }
 
-function loop(){
+function loop(timestamp){
   if(input.up) y -= 1;
   if(input.down) y += 1;
   if(input.left) x -= 1;
   if(input.right) x += 1;
 
-  ctx.fillStyle = "red"
-  ctx.fillRect(x, y, 5, 5); 
+  backCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-  setTimeout(loop, speed);
+  backCtx.drawImage(image, 0, 0, 200, 100);
+  for(i = 0; i < 100; i++){
+    backCtx.fillStyle = "blue";
+    backCtx.fillRect(
+       (i*20)%100,
+       (i*20)%100,
+       10,
+       10);
+  }
+
+  backCtx.fillStyle = "red"
+  backCtx.fillRect(x, y, 5, 5);  
+
+  ctx.drawImage(backCanvas, 0, 0);
+
+  requestAnimationFrame(loop);
 }
 
-loop();
+//var intervalId = setInterval(loop, speed);
+requestAnimationFrame(loop);
+
+
+
+
